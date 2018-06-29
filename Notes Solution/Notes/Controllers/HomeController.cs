@@ -8,9 +8,25 @@ namespace Notes.Controllers
 {
     public class HomeController : Controller
     {
+
+
         public ActionResult Index()
         {
-            return View();
+            Notes.Models.NotesModel model = new Models.NotesModel();
+            model.Categories = FakeDb.FakeDB.GetCategories().ToList();
+            return View(model);
+        }
+
+        [HttpPost]
+        public ActionResult AddCategory(Notes.Models.NotesModel model)
+        {
+            // makes sure nothing malicious comes in, a properly set up razor view will do this for us.
+            string name = Server.HtmlEncode(model.NewCategoryName);
+
+            // TODO: attempt category save
+            FakeDb.FakeDB.AddCategory(name);
+
+            return RedirectToAction("Index");
         }
 
         public ActionResult About()

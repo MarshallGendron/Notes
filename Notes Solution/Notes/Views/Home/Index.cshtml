@@ -1,27 +1,65 @@
-﻿@{
+﻿@*Should look up HTML Helpers, they have the sole purpose of making the view logic free. They're also not supposed to be hard to make custom ones*@
+
+@model Notes.Models.NotesModel
+@{
     ViewBag.Title = "Home";
 }
 
 <div class="row flex-md-row-reverse">
-    <div class="col-md-6">
-        <div class="border m-2 p-2 rounded">
+    <div class="col-lg-6 col-md-12" >
+        @using (Html.BeginForm("AddCategory", "Home", FormMethod.Post))
+        {
+            <div class="border m-2 p-2 rounded clearfix">            
+                <label class="col-form-label-lg">Category</label>
+                @Html.TextBoxFor(m => m.NewCategoryName, new { @class = "form-control" })                
+                <input type="submit" value="Add" class="btn btn-secondary mt-2 float-right"/>
+            </div>
+        }
+        <div class="border m-2 p-2 rounded form-group clearfix">
             <label class="col-form-label-lg">Category</label>
-            <input type="text" class="form-control" />
-            <button class="btn btn-secondary mt-2 float-right">Add</button>
-        </div>
-        <div class="border m-2 p-2 rounded form-group">
-            <label class="col-form-label-lg">Category</label>
-            <select class="form-control"></select>
+            <select class="form-control">
+                @foreach (var category in Model.Categories)
+                {
+                    <option>@category.Name</option>
+                }
+            </select>
             <label class="col-form-label-lg">Question</label>
             <input type="text" class="form-control"/>
             <label class="col-form-label-lg">Answer</label>
             <textarea class="form-control"></textarea>
             <button class="btn btn-secondary mt-2 float-right">Add</button>
         </div>
+        
     </div>
-    <div class="col-md-6">
-        <h2>Web Hosting</h2>
-        <p>You can easily find a web hosting company that offers the right mix of features and price for your applications.</p>
-        <p><a class="btn btn-default" href="https://go.microsoft.com/fwlink/?LinkId=301867">Learn more &raquo;</a></p>
+    <div class="col-lg-6 col-md-12" >
+        <div class="p-2">
+            <h2>Categories</h2>
+            <hr/>
+            @foreach(var category in Model.Categories)
+            {
+                <div class="card mt-2">
+                    <button class="btn btn container-fluid" data-toggle="collapse" data-target="#@category.Name">
+                        <h3 class="float-left">@category.Name</h3>
+                    </button>
+                    <div id="@category.Name" class="card-body collapse">
+                        @if(category.Notes.Count == 0)
+                        {
+                        <h5 class="ml-4">N/A</h5>
+                        }
+                        else
+                        {
+                            foreach(var note in category.Notes)
+                            {
+                                <a href="@note.Question">                                    
+                                    <ul><li><h5>@note.Question</h5></li></ul>
+                                </a>
+                            }
+                        }
+                    </div>
+                </div>
+            }
+            
+            
+        </div>
     </div>
 </div>
